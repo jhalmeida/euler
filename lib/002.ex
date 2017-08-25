@@ -1,4 +1,4 @@
-defmodule EulerSum do
+defmodule Two do
   
   def while(sum, cur, _prev) when cur >= 4000000 do
     sum      
