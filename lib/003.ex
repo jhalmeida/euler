@@ -6,9 +6,9 @@ defmodule PrimeFactor do
   end
 
   defp check_factor(number, factor, highest_factor) do
-    kvot = div(number, factor)
     cond do
       rem(number, factor) == 0 ->
+        kvot = div(number, factor)
         IO.puts "--------------------------"
         IO.inspect(kvot, label: "factor found, kvot")
         IO.inspect(factor, label: "factor found, factor")
