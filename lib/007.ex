@@ -1,15 +1,19 @@
 defmodule Seven do
   # find 10001 prime number
 
-  defp is_prime(num, i) when i > num / 2 do
+  defp is_prime(num, i, root) when i > root do
     true
   end
+
   
-  defp is_prime(num, i) do
+  defp is_prime(num, i, root) do
     if rem(num, i) == 0 do
       false
     else
-      is_prime(num, i + 2)
+      case rem(i + 2, 3) do
+        0 -> is_prime(num, i + 4, root)
+        _ -> is_prime(num, i + 2, root)
+      end
     end
   end
 
@@ -19,10 +23,11 @@ defmodule Seven do
 
   defp prime_count(num, count) do
     next_num = num + 1
-    if rem(next_num, 2) == 0 do
+    root = :math.sqrt(next_num)
+    if rem(next_num, 2) == 0 || rem(next_num, 3) == 0 do
       prime_count(next_num, count)
     else
-      case is_prime(next_num, 3) do
+      case is_prime(next_num, 5, root) do
         true ->
           prime_count(next_num, count + 1)
         false ->
