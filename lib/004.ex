@@ -27,7 +27,11 @@ defmodule Four do
   end
 
   def solve do
-    find_largest(999, 999, 0)
+    start_time = :os.system_time(:milli_seconds) |> IO.inspect(label: "start_time")
+    num = find_largest(999, 999, 0)
+    end_time = :os.system_time(:milli_seconds) |> IO.inspect(label: "end_time")
+    IO.inspect(end_time - start_time, label: "time taken")
+    IO.inspect(num, label: "number")
   end
 
 end
