@@ -1,7 +1,7 @@
 defmodule Seven do
   # find 10001 prime number
 
-  defp is_prime(num, i, root) when i > root do
+  defp is_prime(_num, i, root) when i > root do
     true
   end
 
