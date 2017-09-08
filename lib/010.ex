@@ -21,4 +21,36 @@ defmodule Ten do
     end_time = :os.system_time(:milli_seconds)
     IO.puts("Time taken: #{(end_time - start_time)/1000}s")
   end
+
+
+
+
+  defp is_prime(num, check, root) when check > root + 1 do
+    true
+  end
+
+  defp is_prime(num, check, root) do
+
+    cond do
+      rem(num, check) == 0 -> false
+      true -> is_prime(num, check + 2, root)
+    end
+  end
+
+  def solve_brute do
+    start_time = :os.system_time(:milli_seconds)
+    # num = Enum.reduce(3..2000000, 2, fn(x, acc) -> 
+    #   case is_prime(x, 3, :math.sqrt(x)) do
+    #     true -> acc + x
+    #     _ -> acc
+    #   end
+    # end)
+
+    num = 2..2000000 |> Stream.drop_every(2) |> Stream.filter(fn(x) -> is_prime(x, 3, :math.sqrt(x)) end) |> Enum.sum
+    end_time = :os.system_time(:milli_seconds)
+    IO.puts("Time taken: #{(end_time - start_time)/1000}s")
+    IO.puts num
+  end
+
+
 end
