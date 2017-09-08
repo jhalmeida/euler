@@ -13,6 +13,8 @@ defmodule Ten do
     start_time = :os.system_time(:milli_seconds)
 
     list = Enum.map(1..999999, fn x -> x * 2 + 1 end)
+    list_end_time = :os.system_time(:milli_seconds)
+    IO.puts("Time taken to create list: #{(list_end_time - start_time)/1000}s")
     filter(list, 2)
       |> IO.inspect(label: "Result")
 
