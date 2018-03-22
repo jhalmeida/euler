@@ -31,6 +31,33 @@ def check_rows(rows, max) do
   end)
 end
 
+
+
+def make_diagonal(row, index) do
+  offset_l = List.duplicate(0, index)
+  offset_r = List.duplicate(0, 19 - index )
+  offset_l ++ row ++ offset_r
+end
+
+def make_diagonals([], _, diagonals) do
+  IO.inspect(List.first(diagonals), label: "list first")
+  transpose(diagonals)
+end
+
+def make_diagonals([head | rest], index \\ 0, diagonals \\ []) do
+   offset_row = make_diagonal(head, index )
+   make_diagonals(rest, index + 1, diagonals ++ [offset_row])
+end
+
+
+
+
+def transpose(rows) do
+  rows
+    |> List.zip
+    |> Enum.map(&Tuple.to_list/1)
+end
+
 def find_max() do
 matrix = [
   ~w(08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08) |> Enum.map(&String.to_integer/1),
@@ -59,12 +86,23 @@ matrix = [
 
   #cols
 
+  cols = transpose(matrix) |> IO.inspect(label: "cols")
+
   #leftdiag
+  left_diag = make_diagonals(matrix)
+
 
   #rightdiag
+  right_diag = transpose(matrix) |> make_diagonals |> IO.inspect(label: "Right diag")
 
-  max = check_rows(matrix, 0)
+  full_mat = matrix ++ cols ++ left_diag ++ right_diag
+
+  IO.inspect(full_mat, label: "Full mat")
+
+  max = check_rows(matrix ++ cols ++ left_diag ++ right_diag, 0)
   IO.puts("max is #{max}")
+
+  full_mat
 end
 
 end
