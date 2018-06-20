@@ -1,6 +1,6 @@
 defmodule Twelve do
 
-  @factors 4
+  @factors 500
 
   def get_factors(n, l) when l > @factors do
     n * (n+1) / 2 |> Kernel.trunc()
