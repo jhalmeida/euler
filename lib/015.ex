@@ -30,7 +30,8 @@ defmodule Fifteen do
     end
   end
 
-  def solve_tuples(dim \\ 2) do
-    route(dim - 1, dim) * 2
+  # Too slow for n = 20
+  def solve_tuples(n \\ 2) do
+    route(n - 1, n) * 2
   end
 end
