@@ -32,10 +32,6 @@ defmodule Fifteen do
   end
 
   def solve_tuples(dim \\ 2) do
-    down = dim
-    right = dim
-    # 0 = down, 1 = right
-    down_start = route(down - 1, right)
-    down_start * 2
+    route(dim - 1, dim) * 2
   end
 end
