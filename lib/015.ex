@@ -30,8 +30,12 @@ defmodule Fifteen do
     end
   end
 
-  # Too slow for n = 20
+  # Very slow for n = 20
   def solve_tuples(n \\ 2) do
-    route(n - 1, n) * 2
+    start = DateTime.utc_now()
+    paths = route(n - 1, n) * 2
+    stop = DateTime.utc_now()
+    IO.inspect({paths, DateTime.diff(stop, start, :millisecond)}, label: "tuples2")
   end
+
 end
