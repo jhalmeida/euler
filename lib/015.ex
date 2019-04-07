@@ -21,7 +21,6 @@ defmodule Fifteen do
     end
   end
 
-  # solve(x index, y index)
   def route(down, right) do
     case down > 0 or right > 0 do
       true ->
