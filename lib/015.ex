@@ -31,7 +31,7 @@ defmodule Fifteen do
   end
 
   # Very slow for n = 20
-  def solve_tuples(n \\ 2) do
+  def solve_brute(n \\ 2) do
     start = DateTime.utc_now()
     paths = route(n - 1, n) * 2
     stop = DateTime.utc_now()
@@ -49,20 +49,19 @@ defmodule Fifteen do
   end
 
   def path_count(node_map, n, x, y) do
-    IO.inspect({node_map, n, [x, y]})
     cond do
       x == 0 and y == 0 ->
         # Top corner, return full count
-        2 * get(node_map, 0, 1) |> IO.inspect(label: "done")
+        2 * get(node_map, 0, 1)
       x == y ->
         # diagonal node, start on bottom row one step to the left
         2 * get(node_map, x, y + 1)
         |> put(node_map, x, y)
         |> path_count(n, x - 1, n)
       true ->
-        # add nodes to the right and below
-        right = get(node_map, x + 1, y) |> IO.inspect(label: "right")
-        below = get(node_map, x, y + 1) |> IO.inspect(label: "below")
+        # sum node on to the right and below
+        right = get(node_map, x + 1, y)
+        below = get(node_map, x, y + 1)
         put(right + below, node_map, x, y)
         |> path_count(n, x, y - 1)
     end
