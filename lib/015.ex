@@ -35,7 +35,46 @@ defmodule Fifteen do
     start = DateTime.utc_now()
     paths = route(n - 1, n) * 2
     stop = DateTime.utc_now()
-    IO.inspect({paths, DateTime.diff(stop, start, :millisecond)}, label: "tuples2")
+    IO.inspect(DateTime.diff(stop, start, :millisecond), label: "duration brute force (ms):")
+    IO.inspect(paths, label: "possible routes:")
+  end
+
+# ---------------------------
+  def get(node_map, x, y) do
+    Map.get(node_map, List.to_string([x, y]), 0)
+  end
+
+  def put(count, node_map, x, y) do
+    Map.put(node_map, List.to_string([x, y]), count)
+  end
+
+  def path_count(node_map, n, x, y) do
+    IO.inspect({node_map, n, [x, y]})
+    cond do
+      x == 0 and y == 0 ->
+        # Top corner, return full count
+        2 * get(node_map, 0, 1) |> IO.inspect(label: "done")
+      x == y ->
+        # diagonal node, start on bottom row one step to the left
+        2 * get(node_map, x, y + 1)
+        |> put(node_map, x, y)
+        |> path_count(n, x - 1, n)
+      true ->
+        # add nodes to the right and below
+        right = get(node_map, x + 1, y) |> IO.inspect(label: "right")
+        below = get(node_map, x, y + 1) |> IO.inspect(label: "below")
+        put(right + below, node_map, x, y)
+        |> path_count(n, x, y - 1)
+    end
+  end
+
+  def solve(n \\ 2) do
+    start = DateTime.utc_now()
+    node_map = put(1, %{}, n - 1, n)
+    paths = path_count(node_map, n, n - 1, n - 1)
+    stop = DateTime.utc_now()
+    IO.inspect(DateTime.diff(stop, start, :millisecond), label: "duration (ms):")
+    IO.inspect(paths, label: "possible routes:")
   end
 
 end
