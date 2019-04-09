@@ -1,7 +1,7 @@
 defmodule Twelve do
 
 
-  @factors 10
+  @factors 501
 
 
   def get_factors(n, l, len) when len > 9 do
