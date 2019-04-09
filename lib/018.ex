@@ -38,8 +38,9 @@ defmodule Eighteen do
     |> Enum.map(&(String.to_integer(&1)))
   end
 
-  def format_triangle do
-    File.read!("lib/018.txt")
+  def format_triangle(file \\ "lib/p018_triangle.txt") do
+    File.read!(file)
+    |> String.trim()
     |> String.split("\n")
     |> Enum.map(fn(row) -> format_row(row) end)
   end
