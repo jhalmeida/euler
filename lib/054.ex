@@ -53,4 +53,178 @@ defmodule Fiftyfour do
 
   How many hands does Player 1 win?
   """
+  def format_rows(rows) do
+    rows
+    |> String.trim()
+    |> String.split(" ")
+  end
+
+  def get_data(file \\ "lib/p054_poker.txt") do
+    File.read!(file)
+    |> String.trim()
+    |> String.split("\n")
+    |> Enum.map(fn(rows) -> format_rows(rows) end)
+  end
+
+  def convert_value(value) do
+    case value do
+      "2" -> 2
+      "3" -> 3
+      "4" -> 4
+      "5" -> 5
+      "6" -> 6
+      "7" -> 7
+      "8" -> 8
+      "9" -> 9
+      "T" -> 10
+      "J" -> 11
+      "Q" -> 12
+      "K" -> 13
+      "A" -> 14
+    end
+  end
+
+  def check_flush(hand) do
+    suits =
+      hand
+      |> Enum.map(&(String.last(&1)))
+      |> Enum.uniq()
+      |> length()
+
+    kicker =
+      hand
+      |> Enum.map(&(String.first(&1)))
+      |> Enum.map(&(convert_value(&1)))
+      |> Enum.sort(&(&1 >= &2))
+
+    cond do
+      suits == 1 -> {:ok, kicker}
+      true -> nil
+    end
+  end
+
+  def check_straight(hand) do
+    values =
+      hand
+      |> Enum.map(&(String.first(&1)))
+      |> Enum.map(&(convert_value(&1)))
+      |> Enum.sort()
+
+    match_straight = Enum.map([0, 1, 2, 3, 4], &(&1 + List.first(values)))
+    cond do
+      values == [2, 3, 4, 5, 14] -> {:ok, [5]}
+      values == match_straight -> {:ok, [List.last(values)]}
+      true -> nil
+    end
+
+  end
+
+  def straight_flush(hand) do
+    with {:ok, kicker_flush} <- check_flush(hand),
+         {:ok, kicker_straight} <- check_straight(hand)
+    do
+      IO.puts "found straight_flush"
+      {:straight_flush, kicker_straight}
+    else
+      nil ->
+        IO.puts "did not find straight_flush"
+        four_of_a_kind(hand)
+    end
+  end
+
+  def four_of_a_kind(hand) do
+    IO.puts "in four_of_a_kind"
+    # check if four_of_a_kind
+    # else check next ...
+    {:ok, hand}
+  end
+
+  def full_house(hand) do
+    {:ok, hand}
+  end
+
+  def flush(hand) do
+    {:ok, hand}
+  end
+
+  def straight(hand) do
+    {:ok, hand}
+  end
+
+  def three_of_a_kind(hand) do
+    {:ok, hand}
+  end
+
+  def two_pairs(hand) do
+    {:ok, hand}
+  end
+
+  def one_pair(hand) do
+    {:ok, hand}
+  end
+
+  def hight_card(hand) do
+    {:ok, hand}
+  end
+
+  def find_highest_hand(hand) do
+    straight_flush(hand)
+  end
+
+  def get_hand(hand) do
+    case find_highest_hand(hand) do
+      {:straight_flush, kicker} -> {1, kicker}
+      {:four_of_a_kind, kicker} -> {2, kicker}
+      {:full_house, kicker} -> {3, kicker}
+      {:flush, kicker} -> {4, kicker}
+      {:straight, kicker} -> {5, kicker}
+      {:three_of_a_kind, kicker} -> {6, kicker}
+      {:two_pairs, kicker} -> {7, kicker}
+      {:one_pair, kicker} -> {8, kicker}
+      {:hight_card, kicker} -> {9, kicker}
+    end
+  end
+
+  def check_kicker([], []), do: :draw
+
+  def check_kicker(kicker1, kicker2) do
+    IO.puts "in check_kicker"
+    [k1 | tail1] = kicker1
+    [k2 | tail2] = kicker2
+    cond do
+      k1 > k2 -> :hand1
+      k2 > k1 -> :hand2
+      k1 == k2 -> check_kicker(tail1, tail2)
+    end
+  end
+
+  def winner_check(hand1, hand2) do
+    {hand1_value, hand1_kicker} = hand1
+    {hand2_value, hand2_kicker} = hand2
+    cond do
+      hand1_value > hand2_value -> :hand1
+      hand1_value < hand2_value -> :hand2
+      hand1_value == hand2_value -> check_kicker(hand1_kicker, hand2_kicker)
+    end
+  end
+
+  def solution do
+    # data = get_data()
+    data = [
+      ["8C", "TC", "JC", "9C", "QC", "5D", "2D", "AD", "3D", "4D"],
+      ["TC", "TS", "KC", "TH", "TD", "7D", "7S", "7C", "7H", "AC"]]#,
+      # ["5C", "AD", "5D", "AC", "9C", "7C", "5H", "8D", "TD", "KS"],
+      # ["3H", "7H", "6S", "KC", "JS", "QH", "TD", "JC", "2D", "8S"]
+    # ]
+    Enum.reduce(data, {0, 0}, fn(row, score) ->
+      {hand1_score, hand2_score} = score
+      hand1 = Enum.slice(row, 0..4) |> get_hand()
+      hand2 = Enum.slice(row, 5..9) |> get_hand()
+      case winner_check(hand1, hand2) do
+        :hand1 -> {hand1_score + 1, hand2_score}
+        :hand2 -> {hand1_score, hand2_score + 1}
+        :draw -> {hand1_score, hand2_score}
+      end
+    end)
+  end
 end
