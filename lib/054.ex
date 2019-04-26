@@ -120,7 +120,7 @@ defmodule Fiftyfour do
   end
 
   def straight_flush(hand) do
-    with {:ok, kicker_flush} <- check_flush(hand),
+    with {:ok, _kicker_flush} <- check_flush(hand),
          {:ok, kicker_straight} <- check_straight(hand)
     do
       IO.puts "found straight_flush"
