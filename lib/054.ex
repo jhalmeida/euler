@@ -134,9 +134,36 @@ defmodule Fiftyfour do
 
   def four_of_a_kind(hand) do
     IO.puts "in four_of_a_kind"
-    # check if four_of_a_kind
-    # else check next ...
-    {:ok, hand}
+    values = Enum.reduce(hand, %{}, fn (card, acc) ->
+      card_value =
+        card
+        |> String.first()
+        |> convert_value()
+
+      count = Map.get(acc, card_value, 0)
+      Map.put(acc, card_value, count + 1)
+    end)
+
+    max =
+      values
+      |> IO.inspect(label: "four_of_a_kind values")
+      |> Map.values()
+      |> Enum.sort()
+      |> List.last()
+
+    case max do
+      4 ->
+        [value1, value2] = Map.keys(values)
+        kicker = cond do
+          Map.get(values, value1) == 4 -> [value1, value2]
+          Map.get(values, value2) == 4 -> [value2, value1]
+        end
+
+        IO.inspect(kicker, label: "four of a kind")
+        {:four_of_a_kind, kicker}
+      _ ->
+        full_house(hand)
+    end
   end
 
   def full_house(hand) do
