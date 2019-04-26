@@ -239,7 +239,7 @@ defmodule Fiftyfour do
     # data = get_data()
     data = [
       ["8C", "TC", "JC", "9C", "QC", "5D", "2D", "AD", "3D", "4D"],
-      ["TC", "TS", "KC", "TH", "TD", "7D", "7S", "7C", "7H", "AC"]]#,
+      ["TC", "TS", "KC", "TH", "TD", "AC", "7D", "7S", "7C", "7H"]]#,
       # ["5C", "AD", "5D", "AC", "9C", "7C", "5H", "8D", "TD", "KS"],
       # ["3H", "7H", "6S", "KC", "JS", "QH", "TD", "JC", "2D", "8S"]
     # ]
