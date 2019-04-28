@@ -161,37 +161,60 @@ defmodule Fiftyfour do
 
         IO.inspect(kicker, label: "four of a kind")
         {:four_of_a_kind, kicker}
+
       _ ->
         full_house(hand)
     end
   end
 
   def full_house(hand) do
-    {:ok, hand}
+    IO.puts "in full_house"
+    values = Enum.reduce(hand, %{}, fn (card, acc) ->
+      card_value =
+        card
+        |> String.first()
+        |> convert_value()
+
+      count = Map.get(acc, card_value, 0)
+      Map.put(acc, card_value, count + 1)
+    end)
+
+    case map_size(values) do
+      2 ->
+        [value1, value2] = Map.keys(values)
+        kicker = cond do
+          Map.get(values, value1) == 3 -> [value1, value2]
+          Map.get(values, value2) == 3 -> [value2, value1]
+        end
+        {:full_house, kicker}
+
+      _ ->
+        flush(hand)
+    end
   end
 
   def flush(hand) do
-    {:ok, hand}
+    {:flush, []}
   end
 
   def straight(hand) do
-    {:ok, hand}
+    {:straight, []}
   end
 
   def three_of_a_kind(hand) do
-    {:ok, hand}
+    {:three_of_a_kind, []}
   end
 
   def two_pairs(hand) do
-    {:ok, hand}
+    {:two_pairs, []}
   end
 
   def one_pair(hand) do
-    {:ok, hand}
+    {:one_pair, []}
   end
 
   def hight_card(hand) do
-    {:ok, hand}
+    {:hight_card, []}
   end
 
   def find_highest_hand(hand) do
@@ -239,8 +262,8 @@ defmodule Fiftyfour do
     # data = get_data()
     data = [
       ["8C", "TC", "JC", "9C", "QC", "5D", "2D", "AD", "3D", "4D"],
-      ["TC", "TS", "KC", "TH", "TD", "AC", "7D", "7S", "7C", "7H"]]#,
-      # ["5C", "AD", "5D", "AC", "9C", "7C", "5H", "8D", "TD", "KS"],
+      ["TC", "TS", "KC", "TH", "TD", "AC", "7D", "7S", "7C", "7H"],
+      ["5C", "5D", "5S", "AC", "AD", "7C", "7H", "4D", "4H", "7S"]]#,
       # ["3H", "7H", "6S", "KC", "JS", "QH", "TD", "JC", "2D", "8S"]
     # ]
     Enum.reduce(data, {0, 0}, fn(row, score) ->
