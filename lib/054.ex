@@ -210,7 +210,53 @@ defmodule Fiftyfour do
   end
 
   def three_of_a_kind(hand) do
-    {:three_of_a_kind, []}
+    IO.puts "in three_of_a_kind"
+    values = Enum.reduce(hand, %{}, fn (card, acc) ->
+      card_value =
+        card
+        |> String.first()
+        |> convert_value()
+
+      count = Map.get(acc, card_value, 0)
+      Map.put(acc, card_value, count + 1)
+    end)
+
+    max =
+      values
+      |> IO.inspect(label: "three_of_a_kind values")
+      |> Map.values()
+      |> Enum.sort()
+      |> List.last()
+
+    case max do
+      3 ->
+        [value1, value2, value3] = Map.keys(values)
+        kicker = cond do
+          Map.get(values, value1) == 3 ->
+            case value2 > value3 do
+              true -> [value1, value2, value3]
+              false -> [value1, value3, value2]
+            end
+
+          Map.get(values, value2) == 3 ->
+            case value1 > value3 do
+              true -> [value2, value1, value3]
+              false -> [value2, value3, value1]
+            end
+
+          Map.get(values, value3) == 3 ->
+            case value1 > value2 do
+              true -> [value3, value1, value2]
+              false -> [value3, value2, value1]
+            end
+        end
+
+        IO.inspect(kicker, label: "three_of_a_kind")
+        {:three_of_a_kind, kicker}
+
+      _ ->
+        two_pairs(hand)
+    end
   end
 
   def two_pairs(hand) do
@@ -276,7 +322,8 @@ defmodule Fiftyfour do
       ["5C", "5D", "5S", "5H", "AD", "7C", "7H", "4D", "4H", "7S"],
       ["5C", "5D", "5S", "AC", "AD", "7C", "7H", "4D", "4H", "7S"],
       ["3H", "7H", "6H", "KH", "JH", "KD", "7D", "JD", "6D", "4D"],
-      ["3D", "7H", "6H", "5H", "4H", "AC", "5S", "2D", "4D", "3C"]]#,
+      ["3D", "7H", "6H", "5H", "4H", "AC", "5S", "2D", "4D", "3C"],
+      ["5C", "6D", "5S", "5H", "AD", "5C", "5H", "4D", "AH", "5S"]]#,
       # ["3H", "7H", "6S", "KC", "JS", "QH", "TD", "JC", "2D", "8S"]
     # ]
     Enum.reduce(data, {0, 0}, fn(row, score) ->
