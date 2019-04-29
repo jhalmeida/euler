@@ -134,22 +134,17 @@ defmodule Fiftyfour do
     with {:ok, _kicker_flush} <- check_flush(hand),
          {:ok, kicker_straight} <- check_straight(hand)
     do
-      IO.puts "found straight_flush"
       {:straight_flush, kicker_straight}
     else
-      nil ->
-        IO.puts "did not find straight_flush"
-        four_of_a_kind(hand)
+      nil -> four_of_a_kind(hand)
     end
   end
 
   def four_of_a_kind(hand) do
-    IO.puts "in four_of_a_kind"
     values = get_value_count(hand)
 
     max =
       values
-      |> IO.inspect(label: "four_of_a_kind values")
       |> Map.values()
       |> Enum.sort()
       |> List.last()
@@ -161,8 +156,6 @@ defmodule Fiftyfour do
           Map.get(values, value1) == 4 -> [value1, value2]
           Map.get(values, value2) == 4 -> [value2, value1]
         end
-
-        IO.inspect(kicker, label: "four of a kind")
         {:four_of_a_kind, kicker}
 
       _ ->
@@ -171,9 +164,7 @@ defmodule Fiftyfour do
   end
 
   def full_house(hand) do
-    IO.puts "in full_house"
     values = get_value_count(hand)
-
     case map_size(values) do
       2 ->
         [value1, value2] = Map.keys(values)
@@ -205,12 +196,10 @@ defmodule Fiftyfour do
   end
 
   def three_of_a_kind(hand) do
-    IO.puts "in three_of_a_kind"
     values = get_value_count(hand)
 
     max =
       values
-      |> IO.inspect(label: "three_of_a_kind values")
       |> Map.values()
       |> Enum.sort()
       |> List.last()
@@ -237,8 +226,6 @@ defmodule Fiftyfour do
               false -> [value3, value2, value1]
             end
         end
-
-        IO.inspect(kicker, label: "three_of_a_kind")
         {:three_of_a_kind, kicker}
 
       _ ->
@@ -247,7 +234,6 @@ defmodule Fiftyfour do
   end
 
   def two_pairs(hand) do
-    IO.puts "in two_pairs"
     values = get_value_count(hand)
 
     case map_size(values) do
@@ -272,8 +258,6 @@ defmodule Fiftyfour do
               false -> [value2, value1, value3]
             end
         end
-
-        IO.inspect(kicker, label: "two_pairs")
         {:two_pairs, kicker}
 
       _ ->
@@ -290,9 +274,7 @@ defmodule Fiftyfour do
   end
 
   def one_pair(hand) do
-    IO.puts "in one_pair"
     values = get_value_count(hand)
-
     case map_size(values) do
       4 ->
         [value1, value2, value3, value4] = Map.keys(values)
@@ -302,8 +284,6 @@ defmodule Fiftyfour do
           Map.get(values, value3) == 2 -> one_pair_kicker_list(values, value3)
           Map.get(values, value4) == 2 -> one_pair_kicker_list(values, value4)
         end
-
-        IO.inspect(kicker, label: "one_pair")
         {:one_pair, kicker}
 
       _ ->
@@ -342,7 +322,6 @@ defmodule Fiftyfour do
   def check_kicker([], []), do: :draw
 
   def check_kicker(kicker1, kicker2) do
-    IO.puts "in check_kicker"
     [k1 | tail1] = kicker1
     [k2 | tail2] = kicker2
     cond do
@@ -355,8 +334,7 @@ defmodule Fiftyfour do
   def winner_check(hand1, hand2) do
     {hand1_value, hand1_kicker} = hand1
     {hand2_value, hand2_kicker} = hand2
-    IO.inspect([hand1_value, hand2_value], label: "winner check, hand values")
-    IO.inspect([hand1_kicker, hand2_kicker], label: "winner check, kicker")
+    IO.inspect(%{hand1: [hand1_value, hand1_kicker], hand2: [hand2_value, hand2_kicker]}, label: "winner check")
     cond do
       hand1_value < hand2_value -> :hand1
       hand1_value > hand2_value -> :hand2
@@ -365,20 +343,7 @@ defmodule Fiftyfour do
   end
 
   def solution do
-    # data = get_data()
-    data = [
-      ["8C", "TC", "JC", "9C", "QC", "5D", "2D", "AD", "3D", "4D"],
-      ["TC", "TS", "KC", "TH", "TD", "AC", "7D", "7S", "7C", "7H"],
-      ["5C", "5D", "5S", "5H", "AD", "7C", "7H", "4D", "4H", "7S"],
-      ["5C", "5D", "5S", "AC", "AD", "7C", "7H", "4D", "4H", "7S"],
-      ["3H", "7H", "6H", "KH", "JH", "KD", "7D", "JD", "6D", "4D"],
-      ["3D", "7H", "6H", "5H", "4H", "AC", "5S", "2D", "4D", "3C"],
-      ["5C", "6D", "5S", "5H", "AD", "5C", "5H", "4D", "AH", "5S"],
-      ["3H", "3D", "KS", "KC", "JS", "5H", "5D", "JC", "JD", "8S"],
-      ["3H", "AD", "KS", "KC", "JS", "5H", "5D", "QC", "JD", "8S"],
-      ["3H", "AD", "KS", "2C", "JS", "5H", "4D", "QC", "JD", "8S"]]#,
-      # ["3H", "7H", "6S", "KC", "JS", "QH", "TD", "JC", "2D", "8S"]
-    # ]
+    data = get_data()
     Enum.reduce(data, {0, 0}, fn(row, score) ->
       {hand1_score, hand2_score} = score
       hand1 = Enum.slice(row, 0..4) |> get_hand()
