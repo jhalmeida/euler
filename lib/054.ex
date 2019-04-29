@@ -281,12 +281,38 @@ defmodule Fiftyfour do
     end
   end
 
-  def one_pair(hand) do
-    {:one_pair, []}
+  defp one_pair_kicker_list(values, value) do
+    values
+    |> Map.drop([value])
+    |> Map.keys()
+    |> Enum.sort(&(&1 >= &2))
+    |> List.insert_at(0, value)
   end
 
-  def hight_card(hand) do
-    {:hight_card, []}
+  def one_pair(hand) do
+    IO.puts "in one_pair"
+    values = get_value_count(hand)
+
+    case map_size(values) do
+      4 ->
+        [value1, value2, value3, value4] = Map.keys(values)
+        kicker = cond do
+          Map.get(values, value1) == 2 -> one_pair_kicker_list(values, value1)
+          Map.get(values, value2) == 2 -> one_pair_kicker_list(values, value2)
+          Map.get(values, value3) == 2 -> one_pair_kicker_list(values, value3)
+          Map.get(values, value4) == 2 -> one_pair_kicker_list(values, value4)
+        end
+
+        IO.inspect(kicker, label: "one_pair")
+        {:one_pair, kicker}
+
+      _ ->
+        high_card(hand)
+    end
+  end
+
+  def high_card(hand) do
+    {:high_card, []}
   end
 
   def find_highest_hand(hand) do
@@ -303,7 +329,7 @@ defmodule Fiftyfour do
       {:three_of_a_kind, kicker} -> {6, kicker}
       {:two_pairs, kicker} -> {7, kicker}
       {:one_pair, kicker} -> {8, kicker}
-      {:hight_card, kicker} -> {9, kicker}
+      {:high_card, kicker} -> {9, kicker}
     end
   end
 
@@ -342,7 +368,8 @@ defmodule Fiftyfour do
       ["3H", "7H", "6H", "KH", "JH", "KD", "7D", "JD", "6D", "4D"],
       ["3D", "7H", "6H", "5H", "4H", "AC", "5S", "2D", "4D", "3C"],
       ["5C", "6D", "5S", "5H", "AD", "5C", "5H", "4D", "AH", "5S"],
-      ["3H", "3D", "KS", "KC", "JS", "5H", "5D", "JC", "JD", "8S"]]#,
+      ["3H", "3D", "KS", "KC", "JS", "5H", "5D", "JC", "JD", "8S"],
+      ["3H", "AD", "KS", "KC", "JS", "5H", "5D", "QC", "JD", "8S"]]#,
       # ["3H", "7H", "6S", "KC", "JS", "QH", "TD", "JC", "2D", "8S"]
     # ]
     Enum.reduce(data, {0, 0}, fn(row, score) ->
