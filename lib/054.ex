@@ -312,7 +312,13 @@ defmodule Fiftyfour do
   end
 
   def high_card(hand) do
-    {:high_card, []}
+    values =
+      hand
+      |> Enum.map(&(String.first(&1)))
+      |> Enum.map(&(convert_value(&1)))
+      |> Enum.sort(&(&1 >= &2))
+
+    {:high_card, values}
   end
 
   def find_highest_hand(hand) do
@@ -369,7 +375,8 @@ defmodule Fiftyfour do
       ["3D", "7H", "6H", "5H", "4H", "AC", "5S", "2D", "4D", "3C"],
       ["5C", "6D", "5S", "5H", "AD", "5C", "5H", "4D", "AH", "5S"],
       ["3H", "3D", "KS", "KC", "JS", "5H", "5D", "JC", "JD", "8S"],
-      ["3H", "AD", "KS", "KC", "JS", "5H", "5D", "QC", "JD", "8S"]]#,
+      ["3H", "AD", "KS", "KC", "JS", "5H", "5D", "QC", "JD", "8S"],
+      ["3H", "AD", "KS", "2C", "JS", "5H", "4D", "QC", "JD", "8S"]]#,
       # ["3H", "7H", "6S", "KC", "JS", "QH", "TD", "JC", "2D", "8S"]
     # ]
     Enum.reduce(data, {0, 0}, fn(row, score) ->
