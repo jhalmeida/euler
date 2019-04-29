@@ -255,9 +255,11 @@ defmodule Fiftyfour do
   def winner_check(hand1, hand2) do
     {hand1_value, hand1_kicker} = hand1
     {hand2_value, hand2_kicker} = hand2
+    IO.inspect([hand1_value, hand2_value], label: "winner check, hand values")
+    IO.inspect([hand1_kicker, hand2_kicker], label: "winner check, kicker")
     cond do
-      hand1_value > hand2_value -> :hand1
-      hand1_value < hand2_value -> :hand2
+      hand1_value < hand2_value -> :hand1
+      hand1_value > hand2_value -> :hand2
       hand1_value == hand2_value -> check_kicker(hand1_kicker, hand2_kicker)
     end
   end
@@ -267,7 +269,9 @@ defmodule Fiftyfour do
     data = [
       ["8C", "TC", "JC", "9C", "QC", "5D", "2D", "AD", "3D", "4D"],
       ["TC", "TS", "KC", "TH", "TD", "AC", "7D", "7S", "7C", "7H"],
-      ["5C", "5D", "5S", "AC", "AD", "7C", "7H", "4D", "4H", "7S"]]#,
+      ["5C", "5D", "5S", "5H", "AD", "7C", "7H", "4D", "4H", "7S"],
+      ["5C", "5D", "5S", "AC", "AD", "7C", "7H", "4D", "4H", "7S"],
+      ["3H", "7H", "6H", "KH", "JH", "KD", "7D", "JD", "6D", "4D"]]#,
       # ["3H", "7H", "6S", "KC", "JS", "QH", "TD", "JC", "2D", "8S"]
     # ]
     Enum.reduce(data, {0, 0}, fn(row, score) ->
@@ -275,9 +279,15 @@ defmodule Fiftyfour do
       hand1 = Enum.slice(row, 0..4) |> get_hand()
       hand2 = Enum.slice(row, 5..9) |> get_hand()
       case winner_check(hand1, hand2) do
-        :hand1 -> {hand1_score + 1, hand2_score}
-        :hand2 -> {hand1_score, hand2_score + 1}
-        :draw -> {hand1_score, hand2_score}
+        :hand1 ->
+          IO.inspect({hand1_score + 1, hand2_score}, label: "hand1 wins")
+          {hand1_score + 1, hand2_score}
+        :hand2 ->
+          IO.inspect({hand1_score, hand2_score + 1}, label: "hand2 wins")
+          {hand1_score, hand2_score + 1}
+        :draw ->
+          IO.inspect({hand1_score, hand2_score}, label: "split pot")
+          {hand1_score, hand2_score}
       end
     end)
   end
