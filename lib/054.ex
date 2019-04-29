@@ -194,7 +194,11 @@ defmodule Fiftyfour do
   end
 
   def flush(hand) do
-    {:flush, []}
+    with {:ok, kicker} <- check_flush(hand) do
+      {:flush, kicker}
+    else
+      nil -> straight(hand)
+    end
   end
 
   def straight(hand) do
