@@ -202,7 +202,11 @@ defmodule Fiftyfour do
   end
 
   def straight(hand) do
-    {:straight, []}
+    with {:ok, kicker} <- check_straight(hand) do
+      {:straight, kicker}
+    else
+      nil -> three_of_a_kind(hand)
+    end
   end
 
   def three_of_a_kind(hand) do
@@ -271,7 +275,8 @@ defmodule Fiftyfour do
       ["TC", "TS", "KC", "TH", "TD", "AC", "7D", "7S", "7C", "7H"],
       ["5C", "5D", "5S", "5H", "AD", "7C", "7H", "4D", "4H", "7S"],
       ["5C", "5D", "5S", "AC", "AD", "7C", "7H", "4D", "4H", "7S"],
-      ["3H", "7H", "6H", "KH", "JH", "KD", "7D", "JD", "6D", "4D"]]#,
+      ["3H", "7H", "6H", "KH", "JH", "KD", "7D", "JD", "6D", "4D"],
+      ["3D", "7H", "6H", "5H", "4H", "AC", "5S", "2D", "4D", "3C"]]#,
       # ["3H", "7H", "6S", "KC", "JS", "QH", "TD", "JC", "2D", "8S"]
     # ]
     Enum.reduce(data, {0, 0}, fn(row, score) ->
