@@ -247,7 +247,38 @@ defmodule Fiftyfour do
   end
 
   def two_pairs(hand) do
-    {:two_pairs, []}
+    IO.puts "in two_pairs"
+    values = get_value_count(hand)
+
+    case map_size(values) do
+      3 ->
+        [value1, value2, value3] = Map.keys(values)
+        kicker = cond do
+          Map.get(values, value1) == 1 ->
+            case value2 > value3 do
+              true -> [value2, value3, value1]
+              false -> [value3, value2, value1]
+            end
+
+          Map.get(values, value2) == 1 ->
+            case value1 > value3 do
+              true -> [value1, value3, value2]
+              false -> [value3, value1, value2]
+            end
+
+          Map.get(values, value3) == 1 ->
+            case value1 > value2 do
+              true -> [value1, value2, value3]
+              false -> [value2, value1, value3]
+            end
+        end
+
+        IO.inspect(kicker, label: "two_pairs")
+        {:two_pairs, kicker}
+
+      _ ->
+        one_pair(hand)
+    end
   end
 
   def one_pair(hand) do
@@ -310,7 +341,8 @@ defmodule Fiftyfour do
       ["5C", "5D", "5S", "AC", "AD", "7C", "7H", "4D", "4H", "7S"],
       ["3H", "7H", "6H", "KH", "JH", "KD", "7D", "JD", "6D", "4D"],
       ["3D", "7H", "6H", "5H", "4H", "AC", "5S", "2D", "4D", "3C"],
-      ["5C", "6D", "5S", "5H", "AD", "5C", "5H", "4D", "AH", "5S"]]#,
+      ["5C", "6D", "5S", "5H", "AD", "5C", "5H", "4D", "AH", "5S"],
+      ["3H", "3D", "KS", "KC", "JS", "5H", "5D", "JC", "JD", "8S"]]#,
       # ["3H", "7H", "6S", "KC", "JS", "QH", "TD", "JC", "2D", "8S"]
     # ]
     Enum.reduce(data, {0, 0}, fn(row, score) ->
