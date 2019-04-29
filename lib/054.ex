@@ -116,7 +116,18 @@ defmodule Fiftyfour do
       values == match_straight -> {:ok, [List.last(values)]}
       true -> nil
     end
+  end
 
+  def get_value_count(hand) do
+    Enum.reduce(hand, %{}, fn (card, acc) ->
+      card_value =
+        card
+        |> String.first()
+        |> convert_value()
+
+      count = Map.get(acc, card_value, 0)
+      Map.put(acc, card_value, count + 1)
+    end)
   end
 
   def straight_flush(hand) do
@@ -134,15 +145,7 @@ defmodule Fiftyfour do
 
   def four_of_a_kind(hand) do
     IO.puts "in four_of_a_kind"
-    values = Enum.reduce(hand, %{}, fn (card, acc) ->
-      card_value =
-        card
-        |> String.first()
-        |> convert_value()
-
-      count = Map.get(acc, card_value, 0)
-      Map.put(acc, card_value, count + 1)
-    end)
+    values = get_value_count(hand)
 
     max =
       values
@@ -169,15 +172,7 @@ defmodule Fiftyfour do
 
   def full_house(hand) do
     IO.puts "in full_house"
-    values = Enum.reduce(hand, %{}, fn (card, acc) ->
-      card_value =
-        card
-        |> String.first()
-        |> convert_value()
-
-      count = Map.get(acc, card_value, 0)
-      Map.put(acc, card_value, count + 1)
-    end)
+    values = get_value_count(hand)
 
     case map_size(values) do
       2 ->
@@ -211,15 +206,7 @@ defmodule Fiftyfour do
 
   def three_of_a_kind(hand) do
     IO.puts "in three_of_a_kind"
-    values = Enum.reduce(hand, %{}, fn (card, acc) ->
-      card_value =
-        card
-        |> String.first()
-        |> convert_value()
-
-      count = Map.get(acc, card_value, 0)
-      Map.put(acc, card_value, count + 1)
-    end)
+    values = get_value_count(hand)
 
     max =
       values
